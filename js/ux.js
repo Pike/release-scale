@@ -56,5 +56,15 @@ function updateUI() {
     };
 }
 
-google.setOnLoadCallback(updateUI);
+google.setOnLoadCallback(function () {
+    // parse params, update form, and updateUI;
+    if (document.location.search.length > 1) {
+        var segs = document.location.search.substr(1).split('&');
+        for (var i=0, ii=segs.length; i<ii; ++i) {
+            var pair = segs[i].split('=');
+            $('#' + pair[0]).val(pair[1]);
+        }
+    }
+    updateUI();
+});
 $(".trigger").change(updateUI);
