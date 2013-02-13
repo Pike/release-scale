@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/*globals */
+/*globals google*/
 
 var worker = new Worker("js/math.js");
 worker.onmessage = function(event) {
@@ -10,7 +10,7 @@ worker.onmessage = function(event) {
 };
 
 function showTable(matrix, locale_counts) {
-    var i, ii, row, j, jj;
+    var i, ii, row, j, jj, datatable;
     var heads = $("#output > thead");
     // clean up prior mess
     $("th", heads).remove();
@@ -28,6 +28,21 @@ function showTable(matrix, locale_counts) {
         }));
         row.appendTo("#output > tbody");
     }
+    datatable = [['locales', 'no freeze']];
+    for (i=1, ii=matrix.length; i<ii; ++i) {
+        datatable[0].push(i + ' freeze' + (i>1 ? 's' : ''));
+    }
+    for (i=1, ii=matrix[0].length; i<ii; ++i) {
+        datatable.push([i].concat(matrix.map(function(a,b){
+            return a[i]*100;
+        })));
+    }
+    var data = google.visualization.arrayToDataTable(datatable);
+    new google.visualization.LineChart(document.getElementById('visualization')).
+            draw(data, {curveType: "function",
+                        width: 940, height: 500,
+                        vAxis: {maxValue: 100}}
+                );
 }
 
 function updateUI() {
@@ -41,4 +56,5 @@ function updateUI() {
     };
 }
 
-updateUI(0.7, 5);
+google.setOnLoadCallback(updateUI);
+$(".trigger").change(updateUI);
