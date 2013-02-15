@@ -44,7 +44,8 @@ function resetExperiment() {
     dices = Number($("#dices").val());
     retries = Number($("#retries").val());
     empirical = new Array(retries+1);
-    $("#output > tr").remove();
+    var outlink = $("#outlink")[0];
+    outlink.search="?likely=83.3333&locales=1," + dices + "&freezes=" + retries;
     tries = 0;
     for (var i=0; i<=retries; ++i) {
         empirical[i] = 0;
